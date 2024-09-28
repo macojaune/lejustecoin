@@ -9,14 +9,18 @@ export default function Home() {
       <Quiz />
       <main className="flex flex-col gap-8 items-center sm:items-start justify-end ">
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">Toute ressemblance avec de vrais logements est purement fortuite.</li>
-          <li>C'est LeJusteCoin. Rien d'autre.</li>
+          <li className="mb-2">
+            Toute ressemblance avec de vrais logements est purement fortuite.
+          </li>
+          <li>C&apos;est LeJusteCoin. Rien d&apos;autre.</li>
         </ol>
       </main>
       <footer className="flex flex-row gap-6 items-center justify-center">
         <a className="group" href="https://marvinl.com" target="_blank">
           Développé entre 2 coupures de courant par{" "}
-          <span className="group-hover:underline group-hover:underline-offset-8 group-hover:text-orange-02">Marvinl.com →</span>
+          <span className="group-hover:underline group-hover:underline-offset-8 group-hover:text-orange-02">
+            Marvinl.com →
+          </span>
         </a>
       </footer>
     </div>
