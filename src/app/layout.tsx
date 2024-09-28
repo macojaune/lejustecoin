@@ -26,8 +26,34 @@ const raleway = Raleway({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "LeJusteCoin Guadeloupe",
-  description: "Parce que les loyers sont tout sauf justes.",
+  title: "LeJusteCoin Guadeloupe - Viens découvrir le jeu",
+  description:
+    "Parce que les loyers sont tout sauf justes. Un petit jeu pour détentre l'atmosphère ? Ou décrier une réalité bien sombre en Guadeloupe ? On sait pas…",
+  twitter: {
+    creator: "@macojaune",
+    card: "summary_large_image",
+    site: "@lejustecoinBot",
+    title: "LeJusteCoin Guadeloupe - Viens découvrir le jeu",
+    description:
+      "Parce que les loyers sont tout sauf justes. Un petit jeu pour détentre l'atmosphère ? Ou décrier une réalité bien sombre en Guadeloupe ? On sait pas…",
+    images: [],
+  },
+  openGraph: {
+    description:
+      "Parce que les loyers sont tout sauf justes. Un petit jeu pour détentre l'atmosphère ? Ou décrier une réalité bien sombre en Guadeloupe ? On sait pas…",
+    title: "LeJusteCoin Guadeloupe - Viens découvrir le jeu",
+    type: "website",
+    url: "https://lejustecoin.marvinl.com",
+    siteName: "LeJusteCoin Guadeloupe",
+    images: [
+      // {
+      //   url: "https://lejustecoin.marvinl.com", //todo: change this
+      //   width: 1200,
+      //   height: 630,
+      //   alt: "LeJusteCoin Guadeloupe - Viens découvrir le jeu",
+      // },
+    ],
+  },
 };
 
 export default function RootLayout({
