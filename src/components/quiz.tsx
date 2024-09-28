@@ -17,39 +17,6 @@ import clsx from "clsx";
 import { api } from "../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import quizData from "../../mock/ad_data01.json";
-// Mock data for the quiz
-// const quizData = [
-//   {
-//     id: 1,
-//     image: [
-//       "https://img.leboncoin.fr/api/v1/lbcpb1/images/23/fc/25/23fc25127da2be27ffd62207870059c54f83ffc4.jpg?rule=ad-large",
-//       "https://img.leboncoin.fr/api/v1/lbcpb1/images/0d/a0/9b/0da09baf914b9a9841208023999429a9683c9a40.jpg?rule=ad-large",
-//       "https://img.leboncoin.fr/api/v1/lbcpb1/images/15/83/62/15836232501a2b6265dbf71f7fdd0ce766a1048d.jpg?rule=ad-large",
-//       "https://img.leboncoin.fr/api/v1/lbcpb1/images/3a/d0/5d/3ad05d8b1b97370dcf53a6c14e03a11a6fe02a12.jpg?rule=ad-large",
-//     ],
-//     price: 600,
-//   },
-//   {
-//     id: 2,
-//     image: ["/placeholder.svg?height=400&width=600"],
-//     price: 1030,
-//   },
-//   {
-//     id: 3,
-//     image: ["/placeholder.svg?height=400&width=600"],
-//     price: 920,
-//   },
-//   {
-//     id: 4,
-//     image: ["/placeholder.svg?height=400&width=600"],
-//     price: 450,
-//   },
-//   {
-//     id: 5,
-//     image: ["/placeholder.svg?height=400&width=600"],
-//     price: 2620,
-//   },
-// ];
 
 export default function Quiz() {
   const leaderboard = useQuery(api.leaderboard.get);
@@ -155,8 +122,8 @@ export default function Quiz() {
           </CardHeader>
           <CardContent>
             <p className="mb-8 text-lg">
-              Tu as <b>1 minute</b> pour deviner le prix du loyer d'un maximum
-              de logements possible !
+              Tu as <b>1 minute</b> pour deviner le prix du loyer d&apos;un
+              maximum de logements possible !
             </p>
             <Button
               onClick={handleStartGame}
