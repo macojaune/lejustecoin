@@ -159,7 +159,7 @@ export default function Quiz() {
               logements possible !
             </p>
             <Button onClick={handleStartGame} className="w-full">
-              C'est parti
+              C&apos;est parti
             </Button>
           </CardContent>
         </Card>
@@ -180,7 +180,7 @@ export default function Quiz() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
-              C'est fini !
+              C&apos;est fini !
             </CardTitle>
           </CardHeader>
           <CardContent>
