@@ -2,12 +2,17 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
-  content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
         display: ["var(--font-lyons-rounded)"],
         raleway: ["var(--font-raleway)"],
+        mono: ["var(--font-geist-mono)"],
       },
       colors: {
         orange: { "01": "rgb(255 233 222)", "02": "rgb(236 90 19)" },

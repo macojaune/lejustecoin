@@ -130,7 +130,7 @@ export default function Quiz() {
 
   useEffect(() => {
     if (showConfetti) {
-      const timer = setTimeout(() => setShowConfetti(false), 1500);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [showConfetti]);
@@ -155,10 +155,14 @@ export default function Quiz() {
           </CardHeader>
           <CardContent>
             <p className="mb-8 text-lg">
-              Tu as <b>1 minute</b> pour deviner le prix du loyer du maximum de
-              logements possible !
+              Tu as <b>1 minute</b> pour deviner le prix du loyer d'un maximum
+              de logements possible !
             </p>
-            <Button onClick={handleStartGame} className="w-full">
+            <Button
+              onClick={handleStartGame}
+              data-umami-event="play"
+              className="w-full"
+            >
               C&apos;est parti
             </Button>
           </CardContent>
@@ -207,6 +211,8 @@ export default function Quiz() {
                         <Button
                           type="submit"
                           className="w-auto ml-auto px-2 py-1 "
+                          data-umami-event="saveScore"
+                          data-umami-event-name={playerName}
                         >
                           Ok
                         </Button>
