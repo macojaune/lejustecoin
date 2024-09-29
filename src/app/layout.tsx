@@ -4,6 +4,7 @@ import { Raleway } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexProvider";
 import Script from "next/script";
+import Link from "next/link";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -72,7 +73,38 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${raleway.variable} ${lyonsRounded.variable} antialiased`}
       >
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <div className="grid relative items-center min-h-screen bg-orange-01 p-8 pb-20 gap-8 sm:gap-16 sm:p-20">
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <main className="flex flex-col gap-8 items-center sm:items-start justify-end ">
+            <ol className="list-inside list-decimal text-sm text-justify sm:text-left font-mono">
+              <li className="mb-2">
+                Toute ressemblance avec de vrais logements est purement
+                fortuite.
+              </li>
+              <li>C&apos;est LeJusteCoin. Pas le bon…</li>
+              <li className="group font-semibold">
+                <Link href={"/classement"}>
+                  Pour voir le classement c&apos;est{" "}
+                  <span className="group-hover:underline group-hover:underline-offset-8 group-hover:text-orange-02">
+                    par ici
+                  </span>
+                </Link>
+              </li>
+            </ol>
+          </main>
+          <footer className="flex flex-row gap-6 items-center justify-center">
+            <a
+              className="group text-sm font-mono"
+              href="https://marvinl.com"
+              target="_blank"
+            >
+              Développé entre 2 coupures de courant par{" "}
+              <span className="group-hover:underline group-hover:underline-offset-8 group-hover:text-orange-02">
+                Marvinl.com →
+              </span>
+            </a>
+          </footer>
+        </div>
       </body>
     </html>
   );
