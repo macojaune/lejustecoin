@@ -46,17 +46,45 @@ export default function Quiz() {
     }
     return () => clearTimeout(timer);
   }, [timeLeft, gameStarted]);
+  const getRandomFactor = (min: number, max: number) =>
+    Math.random() * (max - min) + min;
 
   const options = useCallback(() => {
     const price = parseInt(shuffledData[currentQuestion].price);
-    return shuffle([
-      price,
-      Math.floor(price + price * 0.2),
-      Math.floor(price - price * 0.4),
-      Math.floor(price + price * 1.2),
-    ]);
-  }, [currentQuestion]);
 
+    const generateRandomPrice = (baseFactor: number, range: number) => {
+      const randomFactor = getRandomFactor(
+        baseFactor - range,
+        baseFactor + range,
+      );
+      return Math.floor(price * randomFactor);
+    };
+
+    // Generate a larger pool of random prices
+    const pricePool = [
+      generateRandomPrice(0.5, 0.1), // Much lower
+      generateRandomPrice(0.7, 0.1), // Lower
+      generateRandomPrice(0.9, 0.05), // Slightly lower
+      generateRandomPrice(1.1, 0.05), // Slightly higher
+      generateRandomPrice(1.3, 0.1), // Higher
+      generateRandomPrice(1.5, 0.1), // Much higher
+      generateRandomPrice(0.8, 0.15), // Variable lower
+      generateRandomPrice(1.2, 0.15), // Variable higher
+      generateRandomPrice(1.0, 0.2), // Around original price
+    ];
+
+    // Shuffle the price pool
+    const shuffledPool = pricePool.sort(() => Math.random() - 0.5);
+
+    // Select 3 random prices from the pool
+    const selectedPrices = shuffledPool.slice(0, 3);
+
+    // Add the correct price
+    selectedPrices.push(price);
+
+    // Final shuffle to randomize position of correct price
+    return selectedPrices.sort(() => Math.random() - 0.5);
+  }, [currentQuestion, shuffledData]);
   useEffect(() => {
     setShuffledOptions(options());
   }, [currentQuestion]);
