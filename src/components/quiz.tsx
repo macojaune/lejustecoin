@@ -218,6 +218,7 @@ export default function Quiz() {
               <Image
                 src={image!}
                 alt={question.url}
+                placeholder="empty"
                 fill
                 className="object-cover"
               />
