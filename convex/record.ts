@@ -6,6 +6,8 @@ import { internalAction } from "./_generated/server";
 export const updateRecord = internalAction({
   args: {},
   handler: async (ctx, args) => {
+    if (process.env.ENV === "development") return;
+
     let tweet = "";
     // get leaderboard
     const [leaderboard, meta] = await Promise.all([
@@ -62,6 +64,7 @@ export const updateRecord = internalAction({
 export const dailyRecap = internalAction({
   args: {},
   handler: async (ctx, args) => {
+    if (process.env.ENV === "development") return;
     let tweet =
       "C'est une nouvelle journée ! Voici le classement du jour :\n\n";
     // get leaderboard
