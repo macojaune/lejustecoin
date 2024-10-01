@@ -270,7 +270,17 @@ export default function Quiz() {
                   : selectedAnswer < parseInt(question.price)
                     ? "C'est plus."
                     : "C'est moins."
-                : "Trouve le prix du loyer"}
+                : "Trouve le prix du loyer"}{" "}
+              {isCorrect !== null && selectedAnswer !== null ? (
+                <a
+                  href={"https://leboncoin.fr" + question.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-orange-02 underline-offset-8 underline"
+                >
+                  Voir l&apos;annonce →
+                </a>
+              ) : null}
             </div>
             <div className="grid grid-cols-2 gap-4">
               {shuffledOptions.map((price) => (
