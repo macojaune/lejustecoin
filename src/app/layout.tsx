@@ -5,6 +5,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexProvider";
 import Script from "next/script";
 import Link from "next/link";
+import { ShareButtons } from "@/components/social-share";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -86,11 +87,18 @@ export default function RootLayout({
                 <Link href={"/classement"}>
                   Pour voir le classement c&apos;est{" "}
                   <span className="group-hover:underline group-hover:underline-offset-8 group-hover:text-orange-02">
-                    par ici
+                    par ici →
                   </span>
                 </Link>
               </li>
             </ol>
+            <div className="flex flex-col self-center justify-center gap-2 mb-2">
+              <p className="font-semibold">Partage ce jeu autour de toi</p>
+              <ShareButtons
+                url="https://lejustecoin.marvinl.com"
+                title="Découvre le jeu LeJusteCoin, un jeu autour du marché de l'immo en Guadeloupe"
+              />
+            </div>
           </main>
           <footer className="flex flex-row gap-6 items-center justify-center">
             <a

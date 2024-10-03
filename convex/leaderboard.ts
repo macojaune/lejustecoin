@@ -17,8 +17,10 @@ export const get = query({
 export const createScore = mutation({
   args: { name: v.string(), score: v.number() },
   handler: async (ctx, args) => {
-    await ctx.db.insert("leaderboard", args);
+    const id = await ctx.db.insert("leaderboard", args);
     await ctx.scheduler.runAfter(0, internal.record.updateRecord);
+
+    return id;
   },
 });
 

@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Confetti from "react-confetti";
 import { shuffle } from "radash";
@@ -17,6 +18,8 @@ import clsx from "clsx";
 import { api } from "../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import quizData from "../../mock/ad_data01.json";
+import { ShareButtons } from "./social-share";
+import { Id } from "../../convex/_generated/dataModel";
 
 export default function Quiz() {
   const leaderboard = useQuery(api.leaderboard.get);
@@ -30,22 +33,29 @@ export default function Quiz() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const [showNameForm, toggleNameForm] = useState(true);
   const [shuffledOptions, setShuffledOptions] = useState<number[]>([]);
   const [playerName, setPlayerName] = useState(
-    "makanda-" + Date.now().toString().slice(-3),
+    localStorage.getItem("playerName") ||
+      "@makanda-" + Date.now().toString().slice(-3),
   );
   const [shuffledData, _] = useState(shuffle(quizData));
+  const [gameId, setGameId] = useState<Id | null>(null);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
+    async function sendScore() {
+      const id = await pushScore({ name: playerName, score });
+      setGameId(id);
+    }
     if (gameStarted && timeLeft > 0) {
       timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     } else if (timeLeft === 0) {
+      sendScore();
       setGameOver(true);
     }
     return () => clearTimeout(timer);
   }, [timeLeft, gameStarted]);
+
   const getRandomFactor = (min: number, max: number) =>
     Math.random() * (max - min) + min;
 
@@ -85,13 +95,17 @@ export default function Quiz() {
     // Final shuffle to randomize position of correct price
     return selectedPrices.sort(() => Math.random() - 0.5);
   }, [currentQuestion, shuffledData]);
+
   useEffect(() => {
     setShuffledOptions(options());
   }, [currentQuestion]);
 
-  const handleStartGame = () => {
-    setGameStarted(true);
+  const handleStartGame = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setShuffledOptions(options());
+    // save name to local storage
+    localStorage.setItem("playerName", playerName);
+    setGameStarted(true);
   };
 
   const handleAnswerClick = (price: number) => {
@@ -116,13 +130,18 @@ export default function Quiz() {
     setIsCorrect(null);
     setShowConfetti(false);
   };
-
-  const handleSubmitName = async (e: React.FormEvent) => {
-    e.preventDefault();
-    toggleNameForm(false);
-    await pushScore({ name: playerName, score });
+  const handleReset = () => {
+    setShuffledOptions(options());
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    setShowConfetti(false);
+    setScore(0);
+    setTimeLeft(60);
+    setGameId(null);
+    setGameOver(false);
+    setGameStarted(true);
   };
-
   useEffect(() => {
     if (showConfetti) {
       const timer = setTimeout(() => setShowConfetti(false), 3000);
@@ -153,13 +172,36 @@ export default function Quiz() {
               Tu as <b>1 minute</b> pour deviner le prix du loyer d&apos;un
               maximum de logements possible !
             </p>
-            <Button
-              onClick={handleStartGame}
-              data-umami-event="play"
-              className="w-full"
+            <form
+              onSubmit={handleStartGame}
+              className="flex flex-col gap-2 sm:gap-4"
             >
-              C&apos;est parti
-            </Button>
+              <div className="w-full text-left">
+                <Label htmlFor="playerName" className="font-semibold">
+                  Choisis un pseudo
+                </Label>
+                <Input
+                  type="text"
+                  id="playerName"
+                  defaultValue={playerName}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  onBlur={(e) => {
+                    if (e.target.value === "") {
+                      setPlayerName(
+                        "@makanda-" + Date.now().toString().slice(-3),
+                      );
+                    }
+                  }}
+                  maxLength={15}
+                  placeholder="Ton @pseudo des réseaux"
+                  className="w-full"
+                  required
+                />
+              </div>
+              <Button type="submit" data-umami-event="play" className="w-full">
+                C&apos;est parti
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
@@ -167,13 +209,6 @@ export default function Quiz() {
   }
 
   if (gameOver) {
-    let board = leaderboard ?? [];
-    if (showNameForm) {
-      board = [
-        ...(leaderboard ?? []),
-        { name: playerName, score, isYou: true },
-      ];
-    }
     return (
       <div className="w-full flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
@@ -186,49 +221,34 @@ export default function Quiz() {
             <p className="text-center mb-4">Ton score: {score} points</p>
             <h3 className="text-xl font-semibold mb-2">Classement</h3>
             <ol className="list-decimal px-6 space-y-2">
-              {board
-                .sort((a, b) => b.score - a.score)
-                .map((player) => (
+              {leaderboard
+                ?.sort((a, b) => b.score - a.score)
+                ?.map((player) => (
                   <li key={player._id}>
-                    {player?.isYou && showNameForm ? (
-                      <form
-                        onSubmit={handleSubmitName}
-                        className="flex flex-row"
-                      >
-                        <Input
-                          type="text"
-                          id="playerName"
-                          value={playerName}
-                          onChange={(e) => setPlayerName(e.target.value)}
-                          placeholder="Ton @pseudo des réseaux"
-                          className="w-3/4"
-                        />
-                        <Button
-                          type="submit"
-                          className="w-auto ml-auto px-2 py-1 "
-                          data-umami-event="saveScore"
-                          data-umami-event-name={playerName}
-                        >
-                          Ok
-                        </Button>
-                      </form>
-                    ) : (
-                      <span
-                        className={clsx(
-                          "flex grow justify-between items-baseline",
-                          player?.isYou && "font-bold",
-                        )}
-                      >
-                        <span>{player.name}</span>
-                        <span className="ml-auto">{player.score} pts</span>
-                      </span>
-                    )}
+                    <span
+                      className={clsx(
+                        "flex grow justify-between items-baseline",
+                        player?._id === gameId && "font-bold",
+                      )}
+                    >
+                      <span>{player.name}</span>
+                      <span className="ml-auto">{player.score} pts</span>
+                    </span>
                   </li>
                 ))}
             </ol>
           </CardContent>
-          <CardFooter>
-            <Button onClick={() => window.location.reload()} className="w-full">
+          <CardFooter className="flex-wrap  justify-center">
+            <div className=" flex flex-col gap-2 mb-2">
+              <p className="font-semibold">
+                Partage tes prouesses avec tes ami·es
+              </p>
+              <ShareButtons
+                url={window.location.href}
+                title={`Je viens de faire ${score}points sur le jeu LeJusteCoin, viens tester !`}
+              />
+            </div>
+            <Button onClick={handleReset} className="w-full">
               Rejouer
             </Button>
           </CardFooter>
