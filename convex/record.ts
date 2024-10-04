@@ -37,6 +37,7 @@ export const updateRecord = internalAction({
         await ctx.runMutation(internal.leaderboard.createMeta, {
           id: highScoreMeta._id,
           value: newHighScore.toString(),
+          name: "highScore",
         });
 
         const newTop3 = orderedBoard.slice(0, 3);
