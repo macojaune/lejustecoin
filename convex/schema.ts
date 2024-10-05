@@ -12,5 +12,5 @@ export default defineSchema({
     name: v.string(),
     score: v.float64(),
   }),
-  meta: defineTable({ value: v.string() }),
+  meta: defineTable({ name: v.string(), value: v.string() }),
 });

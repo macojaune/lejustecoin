@@ -25,7 +25,7 @@ export const createScore = mutation({
 });
 
 export const createMeta = internalMutation({
-  args: { id: v.id("meta"), name: v.optional(v.string()), value: v.string() },
+  args: { id: v.id("meta"), name: v.string(), value: v.string() },
   handler: async (ctx, { id, name, value }) => {
     await ctx.db.patch(id, { name, value });
   },
