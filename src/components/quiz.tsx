@@ -17,14 +17,13 @@ import { shuffle } from "radash";
 import clsx from "clsx";
 import { api } from "../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-import quizData from "../../mock/ad_data01.json";
 import { ShareButtons } from "./social-share";
-import { Id } from "../../convex/_generated/dataModel";
+import { type Id } from "../../convex/_generated/dataModel";
 
 export default function Quiz() {
+  const quizData = useQuery(api.houses.get);
   const leaderboard = useQuery(api.leaderboard.get);
   const pushScore = useMutation(api.leaderboard.createScore);
-
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -35,12 +34,14 @@ export default function Quiz() {
   const [gameStarted, setGameStarted] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState<number[]>([]);
   const [playerName, setPlayerName] = useState(
-    localStorage.getItem("playerName") ||
+    (typeof window !== "undefined" && localStorage.getItem("playerName")) ||
       "@makanda-" + Date.now().toString().slice(-3),
   );
-  const [shuffledData, _] = useState(shuffle(quizData));
   const [gameId, setGameId] = useState<Id | null>(null);
-
+  const shuffledData = useMemo(
+    () => (quizData && shuffle([...quizData])) || [],
+    [quizData],
+  );
   useEffect(() => {
     let timer: NodeJS.Timeout;
     async function sendScore() {
@@ -60,7 +61,7 @@ export default function Quiz() {
     Math.random() * (max - min) + min;
 
   const options = useCallback(() => {
-    const price = parseInt(shuffledData[currentQuestion].price);
+    const price = parseInt(shuffledData?.[currentQuestion]?.price);
 
     const generateRandomPrice = (baseFactor: number, range: number) => {
       const randomFactor = getRandomFactor(
@@ -112,7 +113,7 @@ export default function Quiz() {
     if (gameOver) return;
 
     setSelectedAnswer(price);
-    const correct = price === parseInt(shuffledData[currentQuestion].price);
+    const correct = price === parseInt(shuffledData?.[currentQuestion]?.price);
     setIsCorrect(correct);
     if (correct) {
       setShowConfetti(true);
@@ -150,12 +151,12 @@ export default function Quiz() {
   }, [showConfetti]);
 
   const question = useMemo(
-    () => shuffledData[currentQuestion],
+    () => shuffledData?.[currentQuestion] ?? null,
     [shuffledData, currentQuestion],
   );
   const images = useMemo(
-    () => shuffle(question.images).slice(0, 3),
-    [question.images],
+    () => (question && shuffle(question?.images)?.slice(0, 3)) ?? [],
+    [question],
   );
 
   if (!gameStarted) {
@@ -262,12 +263,13 @@ export default function Quiz() {
       <div className="w-full relative  h-lvh items-end flex justify-center ">
         <div className="absolute z-0 grid sm:grid-cols-3 h-full w-full">
           {images.map((image, index) => (
-            <div key={index} className="w-full relative">
+            <div key={question?.url + "-" + index} className="w-full relative">
               <Image
                 src={image!}
-                alt={question.url}
+                alt={question?.url}
                 placeholder="empty"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px)  33vw"
                 className="object-cover"
               />
             </div>
@@ -287,13 +289,16 @@ export default function Quiz() {
               {isCorrect !== null && selectedAnswer !== null
                 ? isCorrect
                   ? "C'est juste!"
-                  : selectedAnswer < parseInt(question.price)
+                  : selectedAnswer < parseInt(question?.price)
                     ? "C'est plus."
                     : "C'est moins."
                 : "Trouve le prix du loyer"}{" "}
+              {question?.desc !== "" && selectedAnswer === null && (
+                <span className="text-sm text-gray-500">{question?.desc}</span>
+              )}
               {isCorrect !== null && selectedAnswer !== null ? (
                 <a
-                  href={"https://leboncoin.fr" + question.url}
+                  href={"https://leboncoin.fr" + question?.url}
                   target="_blank"
                   rel="noreferrer"
                   className="text-orange-02 underline-offset-8 underline"
@@ -314,7 +319,7 @@ export default function Quiz() {
                         ? "bg-green-500 hover:bg-green-600 text-white"
                         : "animate-shake bg-red-500 hover:bg-red-600 text-white"
                       : selectedAnswer !== null &&
-                          price == parseInt(question.price)
+                          price == parseInt(question?.price)
                         ? "bg-green-500 hover:bg-green-600 text-white"
                         : ""
                   }`}

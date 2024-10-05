@@ -16,6 +16,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as crons from "../crons.js";
+import type * as houses from "../houses.js";
 import type * as leaderboard from "../leaderboard.js";
 import type * as record from "../record.js";
 
@@ -29,6 +30,7 @@ import type * as record from "../record.js";
  */
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
+  houses: typeof houses;
   leaderboard: typeof leaderboard;
   record: typeof record;
 }>;
