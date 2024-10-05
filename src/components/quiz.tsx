@@ -37,7 +37,7 @@ export default function Quiz() {
     (typeof window !== "undefined" && localStorage.getItem("playerName")) ||
       "@makanda-" + Date.now().toString().slice(-3),
   );
-  const [gameId, setGameId] = useState<Id | null>(null);
+  const [gameId, setGameId] = useState<Id<"leaderboard"> | null>(null);
   const shuffledData = useMemo(
     () => (quizData && shuffle([...quizData])) || [],
     [quizData],
