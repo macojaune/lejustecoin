@@ -8,6 +8,8 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@9.15.2 --activate
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_CONVEX_URL
+ENV NEXT_PUBLIC_CONVEX_URL=$NEXT_PUBLIC_CONVEX_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build
